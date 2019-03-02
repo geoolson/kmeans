@@ -1,5 +1,7 @@
 import math
 import random
+import numpy as np
+import matplotlib.pyplot as plt
 
 def preprocess(filename):
     f = open(filename, 'r')
@@ -43,19 +45,52 @@ def initCentroids():
         centroids.append(rands)
     return centroids
 
-#TODO sum the lists together into a new list
-def updateCenters(index, images, clusterList ):
+def initCentroid():
+    centroid = []
+    for j in range(64):
+        centroid.append(random.randint(0,16))
+    return centroid
+
+def updateCenter(index, images, clusterList ):
     count = 0
-    temp = [0]*64
+    listSums = [0]*64
     for i in range(len(images)):
         if index == clusterList[i]:
             count += 1
-            [x + y for x, y in zip(first, second)]#fix this
+            listSums = [x + y for x, y in zip(listSums, images[i])]
+    try:
+        return [ x/count for x in listSums]
+    except:
+        return initCentroid()
+
+def episdode(images, centroids):
+    distances = iterate(images, centroids)
+    members = clusterMembers(distances)
+    for i in range(len(centroids)):
+        centroids[i] = updateCenter(i, images, members)
+    return centroids
 
 if __name__ == "__main__":
     centroids = initCentroids()
     images = preprocess("optdigits/optdigits.train")
     labels = images[1]
     images = images[0]
-    distances = iterate(images, centroids)
-    print(clusterMembers(distances))
+    for i in range(50):
+        centroids = episdode(images, centroids)
+    imgArrays = []
+    for i in range(10):
+        imgArrays.append(np.zeros((8,8)))
+    index = 0
+    for center in centroids:
+        numpyarray = imgArrays[index]
+        for i in range(8):
+            for j in range(8):
+                numpyarray[i][j] = math.floor(center[i*8+j])
+        imgArrays[index] = numpyarray.astype(int)
+        index += 1
+    print(imgArrays[0])
+    for i in range(10):
+        arr = np.asarray(imgArrays[i])
+        plt.imshow(arr, cmap='gray')
+        plt.show()
+
