@@ -36,9 +36,9 @@ def clusterMembers(distances):
         members.append(i.index(min(i)))
     return members
 
-def initCentroids():
+def initCentroids(k=10):
     centroids = []
-    for i in range(10):
+    for i in range(k):
         rands = []
         for j in range(64):
             rands.append(random.randint(0,16))
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     images = preprocess("optdigits/optdigits.train")
     labels = images[1]
     images = images[0]
-    for i in range(50):
+    for i in range(10):
         centroids = episdode(images, centroids)
     imgArrays = []
     for i in range(10):
