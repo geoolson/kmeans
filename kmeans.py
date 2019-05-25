@@ -82,6 +82,7 @@ def updateCenter(index, images, clusterList, centroid):
         updatedCenter = [ x/count for x in listSums]
         if diff(updatedCenter, centroid):
             centerChanging[index] = True
+            print(centerChanging)
             return centroid
         else:
             return updatedCenter
@@ -98,6 +99,9 @@ def episdode(images, centroids):
 def train(centroids, images, labels):
     while areTrained() == False:
         centroids = episdode(images, centroids)
+    return centroids
+
+def display(centroids):
     imgArrays = []
     for i in range(10):
         imgArrays.append(np.zeros((8,8)))
@@ -120,4 +124,4 @@ if __name__ == "__main__":
     images = preprocess("optdigits/optdigits.train")
     labels = images[1]
     images = images[0]
-    train(centroids, images, labels)
+    display(train(centroids, images, labels))
