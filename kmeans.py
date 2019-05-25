@@ -36,6 +36,7 @@ def clusterMembers(distances):
         members.append(i.index(min(i)))
     return members
 
+# k being the number of centroids
 def initCentroids(k=10):
     centroids = []
     for i in range(k):
