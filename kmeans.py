@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
     
 centerChanging = [False,False,False,False,False,False,False,False,False,False]
 
-#checks if all the cluster centers have stopped training
+# checks if all the cluster centers have stopped training
 def areTrained():
     global centerChanging
     for i in centerChanging:
@@ -13,7 +13,7 @@ def areTrained():
             return False
     return True
 
-#returns true if there is no difference between the objects
+# returns true if there is no difference between the objects
 def diff(x,y):
     if len(x) != len(y):
         return False
@@ -62,6 +62,7 @@ def initCentroids(k=10):
         centroids.append(initCentroid())
     return centroids
 
+# create a centroid of random values
 def initCentroid():
     centroid = []
     for j in range(64):
