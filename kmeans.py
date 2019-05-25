@@ -2,6 +2,25 @@ import math
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+    
+centerChanging = [False,False,False,False,False,False,False,False,False,False]
+
+#checks if all the cluster centers have stopped training
+def areTrained():
+    global centerChanging
+    for i in centerChanging:
+        if i == False:
+            return False
+    return True
+
+#returns true if there is no difference between the objects
+def diff(x,y):
+    if len(x) != len(y):
+        return False
+    for i in range(len(x)):
+        if x[i] != y[i]:
+            return False
+    return True
 
 def preprocess(filename):
     f = open(filename, 'r')
@@ -49,7 +68,10 @@ def initCentroid():
         centroid.append(random.randint(0,16))
     return centroid
 
-def updateCenter(index, images, clusterList ):
+def updateCenter(index, images, clusterList, centroid):
+    global centerChanging
+    if centerChanging[index] == True:
+        return centroid
     count = 0
     listSums = [0]*64
     for i in range(len(images)):
@@ -57,7 +79,12 @@ def updateCenter(index, images, clusterList ):
             count += 1
             listSums = [x + y for x, y in zip(listSums, images[i])]
     try:
-        return [ x/count for x in listSums]
+        updatedCenter = [ x/count for x in listSums]
+        if diff(updatedCenter, centroid):
+            centerChanging[index] = True
+            return centroid
+        else:
+            return updatedCenter
     except:
         return initCentroid()
 
@@ -65,15 +92,11 @@ def episdode(images, centroids):
     distances = iterate(images, centroids)
     members = clusterMembers(distances)
     for i in range(len(centroids)):
-        centroids[i] = updateCenter(i, images, members)
+        centroids[i] = updateCenter(i, images, members, centroids[i])
     return centroids
 
-if __name__ == "__main__":
-    centroids = initCentroids()
-    images = preprocess("optdigits/optdigits.train")
-    labels = images[1]
-    images = images[0]
-    for i in range(10):
+def train(centroids, images, labels):
+    while areTrained() == False:
         centroids = episdode(images, centroids)
     imgArrays = []
     for i in range(10):
@@ -92,3 +115,9 @@ if __name__ == "__main__":
         plt.imshow(arr, cmap='gray')
         plt.show()
 
+if __name__ == "__main__":
+    centroids = initCentroids()
+    images = preprocess("optdigits/optdigits.train")
+    labels = images[1]
+    images = images[0]
+    train(centroids, images, labels)
