@@ -40,10 +40,7 @@ def clusterMembers(distances):
 def initCentroids(k=10):
     centroids = []
     for i in range(k):
-        rands = []
-        for j in range(64):
-            rands.append(random.randint(0,16))
-        centroids.append(rands)
+        centroids.append(initCentroid())
     return centroids
 
 def initCentroid():
